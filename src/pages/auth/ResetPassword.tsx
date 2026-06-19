@@ -32,11 +32,21 @@ const ResetPassword = () => {
 
   const reset = usePasswordReset({
     onSuccess: () => {
-      toaster.create({ type: 'success', title: 'Password updated', description: 'You can now sign in.', closable: true })
+      toaster.create({
+        type: 'success',
+        title: 'Password updated',
+        description: 'You can now sign in.',
+        closable: true,
+      })
       navigate(Routes.auth.login, { replace: true })
     },
     onError: (error) =>
-      toaster.create({ type: 'error', title: 'Could not reset password', description: getApiErrorMessage(error), closable: true }),
+      toaster.create({
+        type: 'error',
+        title: 'Could not reset password',
+        description: getApiErrorMessage(error),
+        closable: true,
+      }),
   })
 
   const onSubmit = (values: ResetFormValues) =>

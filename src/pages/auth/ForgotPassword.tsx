@@ -29,7 +29,12 @@ const ForgotPassword = () => {
       navigate(`${Routes.auth.resetPassword}?email=${encodeURIComponent(getValues('email'))}`)
     },
     onError: (error) =>
-      toaster.create({ type: 'error', title: 'Could not send recovery email', description: getApiErrorMessage(error), closable: true }),
+      toaster.create({
+        type: 'error',
+        title: 'Could not send recovery email',
+        description: getApiErrorMessage(error),
+        closable: true,
+      }),
   })
 
   const onSubmit = (values: ForgotFormValues) => recovery.mutate(values)

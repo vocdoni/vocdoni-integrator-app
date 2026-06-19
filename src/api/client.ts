@@ -48,7 +48,10 @@ export type ApiParams = {
  * Thin fetch wrapper around the Vocdoni SaaS API. Serializes JSON bodies, parses the documented
  * `{ code, error }` error envelope, and throws typed errors so callers can branch on auth/validation.
  */
-export const api = <T>(path: string, { body, method = 'GET', headers = new Headers({}) }: ApiParams = {}): Promise<T> => {
+export const api = <T>(
+  path: string,
+  { body, method = 'GET', headers = new Headers({}) }: ApiParams = {}
+): Promise<T> => {
   const isFormData = typeof body === 'object' && body instanceof FormData
   if (!headers.has('Content-Type') && !isFormData) {
     headers.append('Content-Type', 'application/json')

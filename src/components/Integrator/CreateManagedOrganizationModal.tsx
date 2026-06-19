@@ -90,7 +90,11 @@ export const CreateManagedOrganizationButton = () => {
   return (
     <Dialog.Root open={open} onOpenChange={(e) => setOpen(e.open)} placement='center'>
       <Dialog.Trigger asChild>
-        <Button size='sm' disabled={atLimit} title={atLimit ? "You've reached your managed-organization limit." : undefined}>
+        <Button
+          size='sm'
+          disabled={atLimit}
+          title={atLimit ? "You've reached your managed-organization limit." : undefined}
+        >
           <Icon as={LuPlus} />
           Create organization
         </Button>

@@ -28,14 +28,24 @@ const Verify = () => {
       navigate(Routes.dashboard.overview, { replace: true })
     },
     onError: (error) => {
-      toaster.create({ type: 'error', title: 'Verification failed', description: getApiErrorMessage(error), closable: true })
+      toaster.create({
+        type: 'error',
+        title: 'Verification failed',
+        description: getApiErrorMessage(error),
+        closable: true,
+      })
     },
   })
 
   const resend = useResendVerificationMail({
     onSuccess: () => toaster.create({ type: 'success', title: 'Verification code sent', closable: true }),
     onError: (error) =>
-      toaster.create({ type: 'error', title: 'Could not resend code', description: getApiErrorMessage(error), closable: true }),
+      toaster.create({
+        type: 'error',
+        title: 'Could not resend code',
+        description: getApiErrorMessage(error),
+        closable: true,
+      }),
   })
 
   const onSubmit = ({ code }: VerifyFormValues) => verify.mutate({ email, code })
@@ -43,9 +53,7 @@ const Verify = () => {
   return (
     <AuthLayout
       title='Verify your email'
-      subtitle={
-        email ? `Enter the code we sent to ${email}.` : 'Enter the verification code we sent to your email.'
-      }
+      subtitle={email ? `Enter the code we sent to ${email}.` : 'Enter the verification code we sent to your email.'}
       footer={
         <Button
           variant='plain'

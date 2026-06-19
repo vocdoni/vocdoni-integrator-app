@@ -108,10 +108,13 @@ export const useCreateManagedOrganization = () => {
 
   return useMutation<ManagedOrganization, Error, CreateManagedOrganizationBody>({
     mutationFn: (body) =>
-      bearedFetch<ManagedOrganization>(ApiEndpoints.ManagedOrganizations.replace('{address}', ensure0x(selectedAddress!)), {
-        method: 'POST',
-        body,
-      }),
+      bearedFetch<ManagedOrganization>(
+        ApiEndpoints.ManagedOrganizations.replace('{address}', ensure0x(selectedAddress!)),
+        {
+          method: 'POST',
+          body,
+        }
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QueryKeys.integrator.managed(selectedAddress) })
       queryClient.invalidateQueries({ queryKey: QueryKeys.integrator.info(selectedAddress) })
