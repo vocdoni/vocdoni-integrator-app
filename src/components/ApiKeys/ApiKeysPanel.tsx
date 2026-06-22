@@ -13,7 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { LuTrash2 } from 'react-icons/lu'
-import { getApiErrorMessage } from '~/api/client'
+import { ApiError, getApiErrorMessage } from '~/api/client'
 import { useOrg } from '~/auth/OrgContext'
 import { toaster } from '~/components/ui/toaster'
 import { ApiKey, useApiKeys, useRevokeApiKey } from '~/queries/apikeys'
@@ -31,7 +31,7 @@ const status = (k: ApiKey): { label: string; palette: string } => {
   return { label: 'Active', palette: 'green' }
 }
 
-const ApiKeysTab = () => {
+const ApiKeysPanel = () => {
   const { isAdmin } = useOrg()
   const keys = useApiKeys()
   const revoke = useRevokeApiKey()
@@ -58,14 +58,27 @@ const ApiKeysTab = () => {
     )
   }
 
-  // The endpoint is admin-gated; a non-admin (manager) gets a 401 here.
   if (keys.error) {
+    // The endpoint is admin-gated, so only treat 401/403 as "admin-only"; anything else
+    // (e.g. the backend not yet exposing the endpoint) is a genuine load error.
+    const httpStatus = keys.error instanceof ApiError ? keys.error.response?.status : undefined
+    if (httpStatus === 401 || httpStatus === 403) {
+      return (
+        <Alert.Root status='info'>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>API keys are admin-only</Alert.Title>
+            <Alert.Description>Only organization admins can view and manage API keys.</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+      )
+    }
     return (
-      <Alert.Root status='info'>
+      <Alert.Root status='error'>
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>API keys are admin-only</Alert.Title>
-          <Alert.Description>Only organization admins can view and manage API keys.</Alert.Description>
+          <Alert.Title>Couldn't load API keys</Alert.Title>
+          <Alert.Description>{getApiErrorMessage(keys.error)}</Alert.Description>
         </Alert.Content>
       </Alert.Root>
     )
@@ -154,4 +167,4 @@ const ApiKeysTab = () => {
   )
 }
 
-export default ApiKeysTab
+export default ApiKeysPanel

@@ -19,12 +19,13 @@ quota visibility and management of the organizations the integrator owns.
 - **Overview**: quota cards for managed organizations, voting processes and census size, each showing
   usage against its limit and flagging anything at/over the limit.
 - **Managed organizations**: paginated list of the organizations the integrator manages.
+- **API Keys**: a top-level section to create scoped keys (optional expiry; secret shown once) and
+  list/revoke them (with last-used and status). Admin-gated.
 - **Configuration**: a tabbed settings area for the active organization — **Org Details** (edit
   website/subdomain/color/size/country/timezone via `PUT /organizations/{address}`), **Team** (list
   members and pending invites, invite by email + role, change role, remove/cancel/resend), **Subscription**
-  (current plan, usage, upgrade, Stripe billing portal), **API Keys** (create scoped keys with optional
-  expiry, secret shown once, list with last-used/status, revoke) and **Support** (submit a support
-  ticket). Write actions are admin-gated.
+  (current plan, usage, upgrade, Stripe billing portal) and **Support** (submit a support ticket). Write
+  actions are admin-gated.
 - **Org switcher**: if the signed-in user administers more than one organization.
 
 ## Backend

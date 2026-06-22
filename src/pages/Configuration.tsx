@@ -1,6 +1,5 @@
 import { Stack, Tabs, Text } from '@chakra-ui/react'
-import { LuBuilding, LuKey, LuLifeBuoy, LuReceipt, LuUsers } from 'react-icons/lu'
-import ApiKeysTab from '~/components/Configuration/ApiKeysTab'
+import { LuBuilding, LuLifeBuoy, LuReceipt, LuUsers } from 'react-icons/lu'
 import OrgDetailsTab from '~/components/Configuration/OrgDetailsTab'
 import SubscriptionTab from '~/components/Configuration/SubscriptionTab'
 import SupportTab from '~/components/Configuration/SupportTab'
@@ -13,7 +12,7 @@ const ConfigurationPage = () => (
         Configuration
       </Text>
       <Text color='fg.muted' fontSize='sm'>
-        Manage your organization details, team, subscription, API keys and support.
+        Manage your organization details, team, subscription and support.
       </Text>
     </Stack>
 
@@ -28,9 +27,6 @@ const ConfigurationPage = () => (
         <Tabs.Trigger value='subscription'>
           <LuReceipt /> Subscription
         </Tabs.Trigger>
-        <Tabs.Trigger value='apikeys'>
-          <LuKey /> API Keys
-        </Tabs.Trigger>
         <Tabs.Trigger value='support'>
           <LuLifeBuoy /> Support
         </Tabs.Trigger>
@@ -44,9 +40,6 @@ const ConfigurationPage = () => (
       </Tabs.Content>
       <Tabs.Content value='subscription'>
         <SubscriptionTab />
-      </Tabs.Content>
-      <Tabs.Content value='apikeys'>
-        <ApiKeysTab />
       </Tabs.Content>
       <Tabs.Content value='support'>
         <SupportTab />

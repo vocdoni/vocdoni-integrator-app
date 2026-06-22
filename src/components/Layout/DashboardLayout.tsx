@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Heading, Icon, NativeSelect, Stack, Text } from '@chakra-ui/react'
-import { LuBuilding2, LuGauge, LuLogOut, LuSettings } from 'react-icons/lu'
+import { LuBuilding2, LuGauge, LuKey, LuLogOut, LuSettings } from 'react-icons/lu'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '~/auth/AuthContext'
 import { useOrg } from '~/auth/OrgContext'
@@ -9,6 +9,7 @@ import { Routes } from '~/routes'
 const navItems = [
   { label: 'Overview', icon: LuGauge, to: Routes.dashboard.overview, end: true },
   { label: 'Managed organizations', icon: LuBuilding2, to: Routes.dashboard.organizations, end: false },
+  { label: 'API Keys', icon: LuKey, to: Routes.dashboard.apiKeys, end: false },
   { label: 'Configuration', icon: LuSettings, to: Routes.dashboard.configuration, end: false },
 ]
 
