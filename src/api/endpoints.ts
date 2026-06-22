@@ -8,6 +8,8 @@ export enum ApiEndpoints {
   VerifyCode = 'users/verify/code',
   PasswordRecovery = 'users/password/recovery',
   PasswordReset = 'users/password/reset',
+  // Organizations
+  Organizations = 'organizations',
   // Integrator (saas-backend#525)
   Integrator = 'organizations/{address}/integrator',
   ManagedOrganizations = 'organizations/{address}/managed',

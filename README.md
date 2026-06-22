@@ -11,6 +11,8 @@ quota visibility and management of the organizations the integrator owns.
 ## Features
 
 - **Auth**: sign in, sign up (no org-details step), email verification, password recovery/reset.
+- **Self-serve org creation**: a signed-in user with no organization can create one (on-chain account
+  provisioned server-side via `provisionAccount`); they become its admin.
 - **Overview**: quota cards for managed organizations, voting processes and census size, each showing
   usage against its limit and flagging anything at/over the limit.
 - **Managed organizations**: paginated list of the organizations the integrator manages.
@@ -24,8 +26,14 @@ Consumes the integrator endpoints added in **[vocdoni/saas-backend#525](https://
 - `GET  /organizations/{address}/integrator` — quota + usage (admin or manager)
 - `GET  /organizations/{address}/managed?page=&limit=` — paginated managed orgs (admin or manager)
 - `POST /organizations/{address}/managed` — create a managed org (admin only)
+- `POST /organizations` — self-serve org creation (`provisionAccount: true`)
 
 Role gating mirrors the backend: viewing requires admin **or** manager; creating requires **admin**.
+
+**Self-serve integrator enablement** (subscribe to an integrator plan → no manual step) depends on
+**[vocdoni/saas-backend#531](https://github.com/vocdoni/saas-backend/pull/531)**, which derives
+integrator status from the plan's integrator limits. The in-portal subscription/checkout UI is the
+remaining piece; until then, manage the subscription from the main Vocdoni dashboard.
 
 ## Stack
 

@@ -1,7 +1,8 @@
-import { Alert, Center, Spinner } from '@chakra-ui/react'
+import { Alert, Box, Center, Spinner, Stack } from '@chakra-ui/react'
 import { Outlet } from 'react-router-dom'
 import { useOrg } from '~/auth/OrgContext'
 import { useIntegratorInfo } from '~/queries/integrator'
+import { CreateOrganizationButton } from './CreateOrganizationModal'
 
 /**
  * Gates the dashboard content. Shows a clear empty state when the user administers no organization
@@ -22,16 +23,19 @@ const OrgGuard = () => {
 
   if (!candidates.length || !selectedAddress) {
     return (
-      <Alert.Root status='info'>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Title>No organization to manage</Alert.Title>
-          <Alert.Description>
-            Your account does not administer any organization. Contact Vocdoni to be added to an integrator
-            organization.
-          </Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
+      <Stack gap={4} align='flex-start'>
+        <Alert.Root status='info'>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>Create your organization</Alert.Title>
+            <Alert.Description>
+              You don't have an organization yet. Create one to get started — then subscribe to an integrator plan to
+              unlock managed organizations.
+            </Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+        <CreateOrganizationButton label='Create your organization' />
+      </Stack>
     )
   }
 
@@ -45,16 +49,23 @@ const OrgGuard = () => {
 
   if (!data?.enabled) {
     return (
-      <Alert.Root status='warning'>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Title>Not an integrator</Alert.Title>
-          <Alert.Description>
-            This organization is not enabled as an integrator. Contact Vocdoni to enable it, or switch to another
-            organization.
-          </Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
+      <Stack gap={4} align='flex-start'>
+        <Alert.Root status='warning'>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>Not an integrator yet</Alert.Title>
+            <Alert.Description>
+              This organization isn't on an integrator plan. Subscribe to a plan that includes managed organizations to
+              unlock the integrator dashboard — no manual approval needed. If you administer another organization, you
+              can switch to it from the sidebar.
+            </Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+        <Box fontSize='sm' color='fg.muted'>
+          Plan subscription &amp; checkout is coming to this portal; until then, manage your subscription from the main
+          Vocdoni dashboard.
+        </Box>
+      </Stack>
     )
   }
 
