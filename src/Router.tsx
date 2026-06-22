@@ -7,6 +7,7 @@ import Login from '~/pages/auth/Login'
 import Register from '~/pages/auth/Register'
 import ResetPassword from '~/pages/auth/ResetPassword'
 import Verify from '~/pages/auth/Verify'
+import ConfigurationPage from '~/pages/Configuration'
 import ManagedOrganizationsPage from '~/pages/ManagedOrganizations'
 import OverviewPage from '~/pages/Overview'
 import { Routes } from '~/routes'
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
             children: [
               { path: Routes.dashboard.overview, element: <OverviewPage /> },
               { path: Routes.dashboard.organizations, element: <ManagedOrganizationsPage /> },
+              { path: Routes.dashboard.configuration, element: <ConfigurationPage /> },
             ],
           },
         ],

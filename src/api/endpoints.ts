@@ -10,9 +10,21 @@ export enum ApiEndpoints {
   PasswordReset = 'users/password/reset',
   // Organizations
   Organizations = 'organizations',
+  Organization = 'organizations/{address}',
+  OrganizationTypes = 'organizations/types',
+  OrganizationRoles = 'organizations/roles',
+  // Team (organization users & pending invitations)
+  OrganizationUsers = 'organizations/{address}/users',
+  OrganizationUser = 'organizations/{address}/users/{userid}',
+  OrganizationPendingUsers = 'organizations/{address}/users/pending',
+  OrganizationPendingUser = 'organizations/{address}/users/pending/{invitationID}',
+  // Support
+  OrganizationTicket = 'organizations/{address}/ticket',
   // Plans & subscriptions
   Plans = 'plans',
   SubscriptionCheckout = 'subscriptions/checkout',
+  OrganizationSubscription = 'organizations/{address}/subscription',
+  SubscriptionPortal = 'subscriptions/{address}/portal',
   // Integrator (saas-backend#525)
   Integrator = 'organizations/{address}/integrator',
   ManagedOrganizations = 'organizations/{address}/managed',

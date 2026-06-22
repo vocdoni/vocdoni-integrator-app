@@ -9,5 +9,6 @@ export const Routes = {
   dashboard: {
     overview: '/',
     organizations: '/organizations',
+    configuration: '/configuration',
   },
 }

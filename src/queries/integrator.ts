@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { ApiEndpoints } from '~/api/endpoints'
 import { useAuth } from '~/auth/AuthContext'
 import { useOrg } from '~/auth/OrgContext'
@@ -51,19 +51,6 @@ export type ManagedOrganizationsResponse = {
   organizations: ManagedOrganization[]
 }
 
-// Body of POST /organizations/{address}/managed. Only `type` is required.
-export type CreateManagedOrganizationBody = {
-  type: string
-  website?: string
-  size?: string
-  color?: string
-  subdomain?: string
-  country?: string
-  timezone?: string
-  communications?: boolean
-  ownerEmail?: string
-}
-
 /**
  * Integrator quota/usage for the active organization. A non-integrator org returns
  * `{ enabled: false }`; errors (e.g. lacking the role) are treated as "not an integrator" so
@@ -96,28 +83,6 @@ export const usePaginatedManagedOrganizations = (page: number, limit: number) =>
     queryFn: () => {
       const base = ApiEndpoints.ManagedOrganizations.replace('{address}', ensure0x(selectedAddress!))
       return bearedFetch<ManagedOrganizationsResponse>(`${base}?page=${page}&limit=${limit}`)
-    },
-  })
-}
-
-/** Creates a managed organization and refreshes both the list and the quota. */
-export const useCreateManagedOrganization = () => {
-  const { bearedFetch } = useAuth()
-  const { selectedAddress } = useOrg()
-  const queryClient = useQueryClient()
-
-  return useMutation<ManagedOrganization, Error, CreateManagedOrganizationBody>({
-    mutationFn: (body) =>
-      bearedFetch<ManagedOrganization>(
-        ApiEndpoints.ManagedOrganizations.replace('{address}', ensure0x(selectedAddress!)),
-        {
-          method: 'POST',
-          body,
-        }
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QueryKeys.integrator.managed(selectedAddress) })
-      queryClient.invalidateQueries({ queryKey: QueryKeys.integrator.info(selectedAddress) })
     },
   })
 }

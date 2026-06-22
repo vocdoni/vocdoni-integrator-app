@@ -2,7 +2,6 @@ import { Alert, ButtonGroup, Center, Flex, IconButton, Spinner, Stack, Text } fr
 import { useState } from 'react'
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu'
 import { getApiErrorMessage } from '~/api/client'
-import { CreateManagedOrganizationButton } from '~/components/Integrator/CreateManagedOrganizationModal'
 import { ManagedOrganizationsTable } from '~/components/Integrator/ManagedOrganizationsTable'
 import { usePaginatedManagedOrganizations } from '~/queries/integrator'
 
@@ -26,7 +25,6 @@ const ManagedOrganizationsPage = () => {
             Organizations you manage on behalf of your customers.
           </Text>
         </Stack>
-        <CreateManagedOrganizationButton />
       </Flex>
 
       {isLoading ? (
@@ -46,7 +44,7 @@ const ManagedOrganizationsPage = () => {
           <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>No managed organizations yet</Alert.Title>
-            <Alert.Description>Create an organization to start managing it.</Alert.Description>
+            <Alert.Description>Organizations you provision for your customers will appear here.</Alert.Description>
           </Alert.Content>
         </Alert.Root>
       ) : (

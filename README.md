@@ -16,7 +16,11 @@ quota visibility and management of the organizations the integrator owns.
 - **Overview**: quota cards for managed organizations, voting processes and census size, each showing
   usage against its limit and flagging anything at/over the limit.
 - **Managed organizations**: paginated list of the organizations the integrator manages.
-- **Create managed organization**: admin-only modal; disabled when the managed-orgs quota is reached.
+- **Configuration**: a tabbed settings area for the active organization — **Org Details** (edit
+  website/subdomain/color/size/country/timezone via `PUT /organizations/{address}`), **Team** (list
+  members and pending invites, invite by email + role, change role, remove/cancel/resend), **Subscription**
+  (current plan, usage, upgrade, Stripe billing portal) and **Support** (submit a support ticket). Write
+  actions are admin-gated.
 - **Org switcher**: if the signed-in user administers more than one organization.
 
 ## Backend
@@ -25,10 +29,16 @@ Consumes the integrator endpoints added in **[vocdoni/saas-backend#525](https://
 
 - `GET  /organizations/{address}/integrator` — quota + usage (admin or manager)
 - `GET  /organizations/{address}/managed?page=&limit=` — paginated managed orgs (admin or manager)
-- `POST /organizations/{address}/managed` — create a managed org (admin only)
 - `POST /organizations` — self-serve org creation (`provisionAccount: true`)
 
-Role gating mirrors the backend: viewing requires admin **or** manager; creating requires **admin**.
+The **Configuration** area additionally consumes the standard organization endpoints:
+`GET|PUT /organizations/{address}`, `GET /organizations/{address}/users`,
+`GET /organizations/{address}/users/pending`, `POST|PUT|DELETE` on those user/invite routes,
+`GET /organizations/{address}/subscription`, `POST /subscriptions/{address}/portal`,
+`POST /organizations/{address}/ticket`, plus the public `GET /organizations/roles`.
+
+Role gating mirrors the backend: viewing requires admin **or** manager; org/team/subscription writes
+require **admin**.
 
 **Self-serve integrator enablement** is plan-driven (integrator status derives from a plan's
 integrator limits, [vocdoni/saas-backend#531](https://github.com/vocdoni/saas-backend/pull/531)):
@@ -72,5 +82,7 @@ pnpm dev
 - UI strings are English-only for now (no i18n framework). The main app uses i18next; this can be
   added later if the portal needs localization.
 - Managed-org rows show the address only — there is no public org-detail page in this standalone app.
-- The error model special-cases the backend quota codes `40154` (max managed orgs) and `40155`
-  (integrator quota) on create; `40153` means the organization is not an integrator.
+- The integrator quota codes `40153` (not an integrator), `40154` (max managed orgs) and `40155`
+  (integrator quota) are defined in `src/api/endpoints.ts` for surfacing backend quota errors.
+- **API Keys**: not yet implemented — the SaaS backend has no API key/token endpoints (auth is
+  JWT-only). The Configuration area is ready to gain an "API Keys" tab once the backend exists.
