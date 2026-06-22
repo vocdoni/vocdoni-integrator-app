@@ -10,6 +10,9 @@ export enum ApiEndpoints {
   PasswordReset = 'users/password/reset',
   // Organizations
   Organizations = 'organizations',
+  // Plans & subscriptions
+  Plans = 'plans',
+  SubscriptionCheckout = 'subscriptions/checkout',
   // Integrator (saas-backend#525)
   Integrator = 'organizations/{address}/integrator',
   ManagedOrganizations = 'organizations/{address}/managed',

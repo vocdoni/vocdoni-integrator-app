@@ -1,8 +1,9 @@
-import { Alert, Box, Center, Spinner, Stack } from '@chakra-ui/react'
+import { Alert, Center, Spinner, Stack } from '@chakra-ui/react'
 import { Outlet } from 'react-router-dom'
 import { useOrg } from '~/auth/OrgContext'
 import { useIntegratorInfo } from '~/queries/integrator'
 import { CreateOrganizationButton } from './CreateOrganizationModal'
+import { UpgradePlansButton } from './UpgradeDialog'
 
 /**
  * Gates the dashboard content. Shows a clear empty state when the user administers no organization
@@ -61,10 +62,7 @@ const OrgGuard = () => {
             </Alert.Description>
           </Alert.Content>
         </Alert.Root>
-        <Box fontSize='sm' color='fg.muted'>
-          Plan subscription &amp; checkout is coming to this portal; until then, manage your subscription from the main
-          Vocdoni dashboard.
-        </Box>
+        <UpgradePlansButton label='Choose an integrator plan' />
       </Stack>
     )
   }

@@ -1,6 +1,7 @@
-import { Alert, SimpleGrid, Spinner, Stack, Text } from '@chakra-ui/react'
+import { Alert, Flex, SimpleGrid, Spinner, Stack, Text } from '@chakra-ui/react'
 import { useIntegratorInfo } from '~/queries/integrator'
 import { QuotaCard } from './QuotaCard'
+import { UpgradePlansButton } from './UpgradeDialog'
 
 export const IntegratorOverview = () => {
   const { data, isLoading, error } = useIntegratorInfo()
@@ -20,14 +21,17 @@ export const IntegratorOverview = () => {
 
   return (
     <Stack gap={5}>
-      <Stack gap={1}>
-        <Text fontSize='2xl' fontWeight='bold'>
-          Overview
-        </Text>
-        <Text color='fg.muted' fontSize='sm'>
-          Your integrator quota and current usage.
-        </Text>
-      </Stack>
+      <Flex justify='space-between' align='flex-start' gap={4} wrap='wrap'>
+        <Stack gap={1}>
+          <Text fontSize='2xl' fontWeight='bold'>
+            Overview
+          </Text>
+          <Text color='fg.muted' fontSize='sm'>
+            Your integrator quota and current usage.
+          </Text>
+        </Stack>
+        <UpgradePlansButton />
+      </Flex>
       <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
         <QuotaCard label='Managed organizations' usage={usage.managedOrgs} limit={limits.maxManagedOrgs} />
         <QuotaCard label='Voting processes' usage={usage.managedProcesses} limit={limits.maxManagedProcesses} />

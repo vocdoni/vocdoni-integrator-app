@@ -30,14 +30,19 @@ Consumes the integrator endpoints added in **[vocdoni/saas-backend#525](https://
 
 Role gating mirrors the backend: viewing requires admin **or** manager; creating requires **admin**.
 
-**Self-serve integrator enablement** (subscribe to an integrator plan → no manual step) depends on
-**[vocdoni/saas-backend#531](https://github.com/vocdoni/saas-backend/pull/531)**, which derives
-integrator status from the plan's integrator limits. The in-portal subscription/checkout UI is the
-remaining piece; until then, manage the subscription from the main Vocdoni dashboard.
+**Self-serve integrator enablement** is plan-driven (integrator status derives from a plan's
+integrator limits, [vocdoni/saas-backend#531](https://github.com/vocdoni/saas-backend/pull/531)):
+- **Free tier** — creating an org here subscribes it to the free integrator plan automatically, no
+  checkout ([saas-backend#532](https://github.com/vocdoni/saas-backend/pull/532)).
+- **Paid tiers** — admins upgrade via Stripe checkout, listing integrator plans from `GET /plans`
+  ([saas-backend#532](https://github.com/vocdoni/saas-backend/pull/532) exposes their limits) and
+  paying through the embedded Stripe Custom Checkout (`POST /subscriptions/checkout`). Requires
+  `VITE_STRIPE_PUBLISHABLE_KEY` and the Stripe integrator products to be configured; without the key
+  the upgrade UI shows a "payments unavailable" message.
 
 ## Stack
 
-React 18 + TypeScript + Vite + Chakra UI v3 + TanStack Query + React Router + React Hook Form.
+React 18 + TypeScript + Vite + Chakra UI v3 + TanStack Query + React Router + React Hook Form + Stripe.
 
 ## Getting started
 
@@ -52,6 +57,7 @@ pnpm dev
 | Variable        | Description                                  | Example                              |
 | --------------- | -------------------------------------------- | ------------------------------------ |
 | `VITE_SAAS_URL` | Base URL of the Vocdoni SaaS backend (no trailing slash) | `https://saas-api-dev.vocdoni.net` |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key for plan-upgrade checkout (optional) | `pk_test_…` |
 
 ## Scripts
 
