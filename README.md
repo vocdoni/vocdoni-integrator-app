@@ -22,8 +22,9 @@ quota visibility and management of the organizations the integrator owns.
 - **Configuration**: a tabbed settings area for the active organization — **Org Details** (edit
   website/subdomain/color/size/country/timezone via `PUT /organizations/{address}`), **Team** (list
   members and pending invites, invite by email + role, change role, remove/cancel/resend), **Subscription**
-  (current plan, usage, upgrade, Stripe billing portal) and **Support** (submit a support ticket). Write
-  actions are admin-gated.
+  (current plan, usage, upgrade, Stripe billing portal), **API Keys** (create scoped keys with optional
+  expiry, secret shown once, list with last-used/status, revoke) and **Support** (submit a support
+  ticket). Write actions are admin-gated.
 - **Org switcher**: if the signed-in user administers more than one organization.
 
 ## Backend
@@ -87,5 +88,7 @@ pnpm dev
 - Managed-org rows show the address only — there is no public org-detail page in this standalone app.
 - The integrator quota codes `40153` (not an integrator), `40154` (max managed orgs) and `40155`
   (integrator quota) are defined in `src/api/endpoints.ts` for surfacing backend quota errors.
-- **API Keys**: not yet implemented — the SaaS backend has no API key/token endpoints (auth is
-  JWT-only). The Configuration area is ready to gain an "API Keys" tab once the backend exists.
+- **API Keys**: scoped programmatic credentials (Configuration → API Keys), backed by
+  [vocdoni/saas-backend#535](https://github.com/vocdoni/saas-backend/pull/535). Keys authenticate as
+  `Authorization: Bearer vsk_…` and carry scopes (`quota:read`, `managed:read`, `managed:write`,
+  `voting:write`, `members:write`); the secret is shown only once at creation.

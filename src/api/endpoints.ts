@@ -28,6 +28,9 @@ export enum ApiEndpoints {
   // Integrator (saas-backend#525)
   Integrator = 'organizations/{address}/integrator',
   ManagedOrganizations = 'organizations/{address}/managed',
+  // API keys (saas-backend#535)
+  APIKeys = 'organizations/{address}/apikeys',
+  APIKey = 'organizations/{address}/apikeys/{keyID}',
 }
 
 export enum ErrorCode {

@@ -1,0 +1,157 @@
+import {
+  Alert,
+  Badge,
+  Center,
+  Code,
+  Flex,
+  HStack,
+  IconButton,
+  Icon,
+  Spinner,
+  Stack,
+  Table,
+  Text,
+} from '@chakra-ui/react'
+import { LuTrash2 } from 'react-icons/lu'
+import { getApiErrorMessage } from '~/api/client'
+import { useOrg } from '~/auth/OrgContext'
+import { toaster } from '~/components/ui/toaster'
+import { ApiKey, useApiKeys, useRevokeApiKey } from '~/queries/apikeys'
+import { CreateApiKeyButton } from './CreateApiKeyModal'
+
+const formatDate = (value?: string) => {
+  if (!value) return '—'
+  const d = new Date(value)
+  return isNaN(d.getTime()) ? value : d.toLocaleDateString()
+}
+
+const status = (k: ApiKey): { label: string; palette: string } => {
+  if (k.revoked) return { label: 'Revoked', palette: 'red' }
+  if (k.expiresAt && new Date(k.expiresAt).getTime() < Date.now()) return { label: 'Expired', palette: 'orange' }
+  return { label: 'Active', palette: 'green' }
+}
+
+const ApiKeysTab = () => {
+  const { isAdmin } = useOrg()
+  const keys = useApiKeys()
+  const revoke = useRevokeApiKey()
+
+  const onRevoke = async (k: ApiKey) => {
+    try {
+      await revoke.mutateAsync({ id: k.id })
+      toaster.create({ type: 'success', title: 'API key revoked', closable: true })
+    } catch (err) {
+      toaster.create({
+        type: 'error',
+        title: 'Could not revoke key',
+        description: getApiErrorMessage(err),
+        closable: true,
+      })
+    }
+  }
+
+  if (keys.isLoading) {
+    return (
+      <Center py={12}>
+        <Spinner />
+      </Center>
+    )
+  }
+
+  // The endpoint is admin-gated; a non-admin (manager) gets a 401 here.
+  if (keys.error) {
+    return (
+      <Alert.Root status='info'>
+        <Alert.Indicator />
+        <Alert.Content>
+          <Alert.Title>API keys are admin-only</Alert.Title>
+          <Alert.Description>Only organization admins can view and manage API keys.</Alert.Description>
+        </Alert.Content>
+      </Alert.Root>
+    )
+  }
+
+  const list = keys.data ?? []
+
+  return (
+    <Stack gap={5}>
+      <Flex justify='space-between' align='center' gap={4} wrap='wrap'>
+        <Text color='fg.muted' fontSize='sm'>
+          Programmatic credentials for calling the API as this organization. Secrets are shown only once.
+        </Text>
+        {isAdmin && <CreateApiKeyButton />}
+      </Flex>
+
+      {list.length === 0 ? (
+        <Alert.Root status='info'>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>No API keys yet</Alert.Title>
+            <Alert.Description>Create a key to access the API without signing in.</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+      ) : (
+        <Table.ScrollArea borderWidth='1px' borderRadius='md'>
+          <Table.Root variant='outline'>
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>Label</Table.ColumnHeader>
+                <Table.ColumnHeader>Key</Table.ColumnHeader>
+                <Table.ColumnHeader>Scopes</Table.ColumnHeader>
+                <Table.ColumnHeader>Last used</Table.ColumnHeader>
+                <Table.ColumnHeader>Expires</Table.ColumnHeader>
+                <Table.ColumnHeader>Status</Table.ColumnHeader>
+                {isAdmin && <Table.ColumnHeader textAlign='end'>Actions</Table.ColumnHeader>}
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {list.map((k) => {
+                const s = status(k)
+                return (
+                  <Table.Row key={k.id}>
+                    <Table.Cell>{k.label}</Table.Cell>
+                    <Table.Cell>
+                      <Code>{k.prefix}…</Code>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <HStack gap={1} wrap='wrap'>
+                        {k.scopes.map((sc) => (
+                          <Badge key={sc} variant='subtle'>
+                            {sc}
+                          </Badge>
+                        ))}
+                      </HStack>
+                    </Table.Cell>
+                    <Table.Cell>{formatDate(k.lastUsedAt)}</Table.Cell>
+                    <Table.Cell>{formatDate(k.expiresAt)}</Table.Cell>
+                    <Table.Cell>
+                      <Badge colorPalette={s.palette} variant='subtle'>
+                        {s.label}
+                      </Badge>
+                    </Table.Cell>
+                    {isAdmin && (
+                      <Table.Cell textAlign='end'>
+                        <IconButton
+                          aria-label='Revoke key'
+                          variant='ghost'
+                          size='sm'
+                          color='fg.error'
+                          disabled={k.revoked || revoke.isPending}
+                          onClick={() => onRevoke(k)}
+                        >
+                          <Icon as={LuTrash2} />
+                        </IconButton>
+                      </Table.Cell>
+                    )}
+                  </Table.Row>
+                )
+              })}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollArea>
+      )}
+    </Stack>
+  )
+}
+
+export default ApiKeysTab

@@ -10,6 +10,7 @@ export const QueryKeys = {
     roles: ['organization', 'roles'],
     users: (address?: string) => ['organization', 'users', address].filter(Boolean),
     pending: (address?: string) => ['organization', 'pending', address].filter(Boolean),
+    apikeys: (address?: string) => ['organization', 'apikeys', address].filter(Boolean),
   },
   subscription: (address?: string) => ['subscription', address].filter(Boolean),
 }
