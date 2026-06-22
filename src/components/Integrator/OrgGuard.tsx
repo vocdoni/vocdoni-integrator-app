@@ -29,8 +29,8 @@ const OrgGuard = () => {
           <Alert.Content>
             <Alert.Title>Create your organization</Alert.Title>
             <Alert.Description>
-              You don't have an organization yet. Create one to get started — then subscribe to an integrator plan to
-              unlock managed organizations.
+              You don't have an organization yet. Create one to get started — it includes the free integrator tier, so
+              you can manage organizations right away. Upgrade later for higher limits.
             </Alert.Description>
           </Alert.Content>
         </Alert.Root>
