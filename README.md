@@ -11,8 +11,11 @@ quota visibility and management of the organizations the integrator owns.
 ## Features
 
 - **Auth**: sign in, sign up (no org-details step), email verification, password recovery/reset.
-- **Self-serve org creation**: a signed-in user with no organization can create one (on-chain account
-  provisioned server-side via `provisionAccount`); they become its admin.
+- **Automatic org provisioning**: the first time a signed-in user has no organization (e.g. right
+  after sign-up), one is created automatically on the free integrator tier with type `others`
+  (on-chain account provisioned server-side via `provisionAccount`); they become its admin. There is
+  no empty dashboard or manual create step — remaining org fields are optional and editable later in
+  Configuration.
 - **Overview**: quota cards for managed organizations, voting processes and census size, each showing
   usage against its limit and flagging anything at/over the limit.
 - **Managed organizations**: paginated list of the organizations the integrator manages.

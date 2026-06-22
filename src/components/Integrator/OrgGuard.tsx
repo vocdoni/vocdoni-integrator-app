@@ -1,42 +1,58 @@
-import { Alert, Center, Spinner, Stack } from '@chakra-ui/react'
+import { Alert, Button, Center, Spinner, Stack, Text } from '@chakra-ui/react'
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
+import { getApiErrorMessage } from '~/api/client'
 import { useOrg } from '~/auth/OrgContext'
 import { useIntegratorInfo } from '~/queries/integrator'
-import { CreateOrganizationButton } from './CreateOrganizationModal'
+import { useCreateOrganization } from '~/queries/organization'
 import { UpgradePlansButton } from './UpgradeDialog'
 
 /**
- * Gates the dashboard content. Shows a clear empty state when the user administers no organization
- * or when the active organization is not enabled as an integrator. The surrounding layout (sidebar,
- * org switcher, logout) stays available so the user can switch orgs or sign out.
+ * Gates the dashboard content. A signed-in integrator always has an organization, so the first
+ * time we find none (e.g. right after sign-up) we provision one automatically on the free
+ * integrator tier with type "others" — no empty dashboard, no manual create step. All other org
+ * fields are optional and can be edited later in Configuration. The surrounding layout (sidebar,
+ * org switcher, logout) stays available throughout.
  */
 const OrgGuard = () => {
   const { selectedAddress, candidates, isLoading: orgLoading } = useOrg()
   const { data, isLoading: infoLoading } = useIntegratorInfo()
+  const create = useCreateOrganization()
 
-  if (orgLoading) {
+  const needsOrg = !orgLoading && (!candidates.length || !selectedAddress)
+
+  useEffect(() => {
+    if (needsOrg && create.isIdle) {
+      create.mutate({ type: 'others' })
+    }
+  }, [needsOrg, create])
+
+  if (create.isError) {
     return (
-      <Center py={16}>
-        <Spinner />
-      </Center>
+      <Stack gap={4} align='flex-start'>
+        <Alert.Root status='error'>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>Couldn't set up your organization</Alert.Title>
+            <Alert.Description>{getApiErrorMessage(create.error)}</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+        <Button onClick={() => create.reset()}>Try again</Button>
+      </Stack>
     )
   }
 
-  if (!candidates.length || !selectedAddress) {
+  // Initial profile load, or provisioning the organization for a brand-new account.
+  if (orgLoading || needsOrg) {
     return (
-      <Stack gap={4} align='flex-start'>
-        <Alert.Root status='info'>
-          <Alert.Indicator />
-          <Alert.Content>
-            <Alert.Title>Create your organization</Alert.Title>
-            <Alert.Description>
-              You don't have an organization yet. Create one to get started — it includes the free integrator tier, so
-              you can manage organizations right away. Upgrade later for higher limits.
-            </Alert.Description>
-          </Alert.Content>
-        </Alert.Root>
-        <CreateOrganizationButton label='Create your organization' />
-      </Stack>
+      <Center py={16}>
+        <Stack align='center' gap={3}>
+          <Spinner />
+          <Text fontSize='sm' color='fg.muted'>
+            Setting up your organization…
+          </Text>
+        </Stack>
+      </Center>
     )
   }
 

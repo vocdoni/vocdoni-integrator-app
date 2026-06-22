@@ -86,15 +86,3 @@ export const usePaginatedManagedOrganizations = (page: number, limit: number) =>
     },
   })
 }
-
-export const ORGANIZATION_TYPES = [
-  'association',
-  'company',
-  'cooperative',
-  'government',
-  'others',
-  'political_party',
-  'professional_body',
-  'sports_club',
-  'union',
-] as const
