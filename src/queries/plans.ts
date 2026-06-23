@@ -9,8 +9,9 @@ export type IntegratorLimits = {
 }
 
 // Subset of the backend SubscriptionPlan we use here (saas-backend#532 exposes integratorLimits).
+// `id` is the plan's Stripe product ID; it is sent back as the checkout `lookupKey`.
 export type Plan = {
-  id: number
+  id: string
   name: string
   monthlyPrice: number
   yearlyPrice: number
