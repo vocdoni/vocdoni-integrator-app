@@ -8,6 +8,7 @@ import {
   Code,
   Dialog,
   Field,
+  Fieldset,
   Icon,
   Input,
   Portal,
@@ -133,8 +134,8 @@ export const CreateApiKeyButton = () => {
                       <Input placeholder='e.g. CI pipeline' value={label} onChange={(e) => setLabel(e.target.value)} />
                     </Field.Root>
 
-                    <Field.Root required>
-                      <Field.Label>Scopes</Field.Label>
+                    <Fieldset.Root>
+                      <Fieldset.Legend>Scopes</Fieldset.Legend>
                       <Stack gap={2} mt={1}>
                         {API_KEY_SCOPES.map((s) => (
                           <Checkbox.Root
@@ -156,7 +157,7 @@ export const CreateApiKeyButton = () => {
                           </Checkbox.Root>
                         ))}
                       </Stack>
-                    </Field.Root>
+                    </Fieldset.Root>
 
                     <Field.Root>
                       <Field.Label>Expiry (optional)</Field.Label>
