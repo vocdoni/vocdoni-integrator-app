@@ -20,11 +20,14 @@ import { LuKey } from 'react-icons/lu'
 import { getApiErrorMessage } from '~/api/client'
 import { API_KEY_SCOPES, CreatedApiKey, useCreateApiKey } from '~/queries/apikeys'
 
+// Keys default to full access; the admin can untick scopes to narrow them.
+const ALL_SCOPES = API_KEY_SCOPES.map((s) => s.value)
+
 /** Admin-only "create API key" action: label + scopes + optional expiry. The secret is shown once. */
 export const CreateApiKeyButton = () => {
   const [open, setOpen] = useState(false)
   const [label, setLabel] = useState('')
-  const [scopes, setScopes] = useState<string[]>([])
+  const [scopes, setScopes] = useState<string[]>(ALL_SCOPES)
   const [expiresAt, setExpiresAt] = useState('')
   const [created, setCreated] = useState<CreatedApiKey | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -32,7 +35,7 @@ export const CreateApiKeyButton = () => {
 
   const reset = () => {
     setLabel('')
-    setScopes([])
+    setScopes(ALL_SCOPES)
     setExpiresAt('')
     setCreated(null)
     setError(null)

@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Card, Center, Flex, SimpleGrid, Spinner, Stack, Stat, Text } from '@chakra-ui/react'
+import { Alert, Button, Card, Center, Flex, Spinner, Stack, Text } from '@chakra-ui/react'
 import { getApiErrorMessage } from '~/api/client'
 import { toaster } from '~/components/ui/toaster'
 import { UpgradePlansButton } from '~/components/Integrator/UpgradeDialog'
@@ -49,7 +49,7 @@ const SubscriptionTab = () => {
     )
   }
 
-  const { plan, subscriptionDetails, usage } = data
+  const { plan, subscriptionDetails } = data
   const isPaid = !plan.default && (plan.monthlyPrice > 0 || plan.yearlyPrice > 0)
 
   return (
@@ -80,30 +80,6 @@ const SubscriptionTab = () => {
           </Flex>
         </Card.Body>
       </Card.Root>
-
-      <Box>
-        <Text fontSize='sm' fontWeight='medium' mb={3}>
-          Usage
-        </Text>
-        <SimpleGrid columns={{ base: 2, md: 4 }} gap={4}>
-          <Stat.Root>
-            <Stat.Label>Sub-organizations</Stat.Label>
-            <Stat.ValueText>{usage.subOrgs}</Stat.ValueText>
-          </Stat.Root>
-          <Stat.Root>
-            <Stat.Label>Team members</Stat.Label>
-            <Stat.ValueText>{usage.users}</Stat.ValueText>
-          </Stat.Root>
-          <Stat.Root>
-            <Stat.Label>Processes</Stat.Label>
-            <Stat.ValueText>{usage.processes}</Stat.ValueText>
-          </Stat.Root>
-          <Stat.Root>
-            <Stat.Label>Emails sent</Stat.Label>
-            <Stat.ValueText>{usage.sentEmails}</Stat.ValueText>
-          </Stat.Root>
-        </SimpleGrid>
-      </Box>
     </Stack>
   )
 }

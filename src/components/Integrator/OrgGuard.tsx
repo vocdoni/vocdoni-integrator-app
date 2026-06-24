@@ -42,8 +42,10 @@ const OrgGuard = () => {
     )
   }
 
-  // Initial profile load, or provisioning the organization for a brand-new account.
-  if (orgLoading || needsOrg) {
+  // Provisioning an organization for a brand-new account (none found yet). This is the only state
+  // that shows the "setting up" copy — a returning user who already has an org never lands here, so
+  // it doesn't flash on every reload.
+  if (needsOrg || create.isPending) {
     return (
       <Center py={16}>
         <Stack align='center' gap={3}>
@@ -56,7 +58,8 @@ const OrgGuard = () => {
     )
   }
 
-  if (infoLoading) {
+  // Normal initial load (profile + integrator info): a plain spinner, no provisioning copy.
+  if (orgLoading || infoLoading) {
     return (
       <Center py={16}>
         <Spinner />
