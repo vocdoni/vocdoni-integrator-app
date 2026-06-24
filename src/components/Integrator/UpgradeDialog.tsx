@@ -34,6 +34,10 @@ const ensure0x = (address: string) => (address.startsWith('0x') ? address : `0x$
 
 const formatPrice = (cents: number) => `$${(cents / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
 
+// Where the "Custom" plan card sends people. No Stripe involved: custom integrator plans are
+// arranged by talking to the team rather than self-serve checkout.
+const contactURL = 'https://vocdoni.io/contact'
+
 // Loaded once; loadStripe('') throws, and the key is optional.
 const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 const stripePromise: Promise<Stripe | null> | null = publishableKey ? loadStripe(publishableKey) : null
@@ -75,6 +79,31 @@ const PlanCard = ({
   )
 }
 
+// CustomPlanCard offers a tailored integrator plan when there is no self-serve option to show
+// (no paid plans configured in Stripe). It needs no Stripe — the CTA just opens the contact page.
+const CustomPlanCard = () => (
+  <Card.Root>
+    <Card.Body gap={3}>
+      <Heading size='md'>Custom</Heading>
+      <HStack align='baseline' gap={1}>
+        <Text fontSize='2xl' fontWeight='bold'>
+          Let&apos;s talk
+        </Text>
+      </HStack>
+      <Text fontSize='sm' color='fg.muted'>
+        Have specific integration needs or higher volumes? We&apos;ll tailor an integrator plan — managed organizations,
+        voting processes and census size — to fit your project.
+      </Text>
+      <Button asChild mt={2}>
+        <a href={contactURL} target='_blank' rel='noopener noreferrer'>
+          <Icon as={LuSparkles} />
+          Contact us
+        </a>
+      </Button>
+    </Card.Body>
+  </Card.Root>
+)
+
 const PlansView = ({ onSelect }: { onSelect: (plan: Plan, period: BillingPeriod) => void }) => {
   const { data: plans, isLoading, error } = useIntegratorPlans()
   const [period, setPeriod] = useState<BillingPeriod>('year')
@@ -95,15 +124,7 @@ const PlansView = ({ onSelect }: { onSelect: (plan: Plan, period: BillingPeriod)
     )
   }
   if (!plans?.length) {
-    return (
-      <Alert.Root status='info'>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Title>No integrator plans available</Alert.Title>
-          <Alert.Description>Check back soon — paid integrator plans are being set up.</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
+    return <CustomPlanCard />
   }
 
   return (
