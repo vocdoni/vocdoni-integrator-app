@@ -9,7 +9,7 @@ const ensure0x = (address: string) => (address.startsWith('0x') ? address : `0x$
 // Trimmed view of saas-backend OrganizationSubscriptionInfo (GET /organizations/{address}/subscription).
 export type OrganizationSubscriptionInfo = {
   subscriptionDetails: {
-    planId: number
+    planId: string // Stripe product ID
     startDate: string
     renewalDate: string
     lastPaymentDate: string
@@ -25,7 +25,7 @@ export type OrganizationSubscriptionInfo = {
     processes: number
   }
   plan: {
-    id: number
+    id: string // Stripe product ID
     name: string
     monthlyPrice: number
     yearlyPrice: number

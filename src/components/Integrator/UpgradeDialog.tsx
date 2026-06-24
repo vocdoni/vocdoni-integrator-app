@@ -27,6 +27,7 @@ import { useOrg } from '~/auth/OrgContext'
 import { toaster } from '~/components/ui/toaster'
 import { QueryKeys } from '~/queries/keys'
 import { Plan, useIntegratorPlans } from '~/queries/plans'
+import { useSubscription } from '~/queries/subscription'
 
 type BillingPeriod = 'month' | 'year'
 
@@ -47,17 +48,22 @@ type CheckoutResponse = { clientSecret: string; sessionId: string }
 const PlanCard = ({
   plan,
   period,
+  isCurrent,
   onSelect,
 }: {
   plan: Plan
   period: BillingPeriod
+  isCurrent: boolean
   onSelect: (plan: Plan) => void
 }) => {
   const price = period === 'year' ? plan.yearlyPrice / 12 : plan.monthlyPrice
   return (
-    <Card.Root>
+    <Card.Root borderColor={isCurrent ? 'blue.solid' : undefined} borderWidth={isCurrent ? '2px' : undefined}>
       <Card.Body gap={3}>
-        <Heading size='md'>{plan.name}</Heading>
+        <HStack justify='space-between' align='start'>
+          <Heading size='md'>{plan.name}</Heading>
+          {isCurrent && <Badge colorPalette='blue'>Current plan</Badge>}
+        </HStack>
         <HStack align='baseline' gap={1}>
           <Text fontSize='2xl' fontWeight='bold'>
             {formatPrice(price)}
@@ -71,9 +77,15 @@ const PlanCard = ({
           <Text>{plan.integratorLimits.maxManagedProcesses} voting processes</Text>
           <Text>{plan.integratorLimits.maxManagedCensusSize} census size</Text>
         </Stack>
-        <Button mt={2} onClick={() => onSelect(plan)}>
-          Choose {plan.name}
-        </Button>
+        {isCurrent ? (
+          <Button mt={2} variant='outline' disabled>
+            Current plan
+          </Button>
+        ) : (
+          <Button mt={2} onClick={() => onSelect(plan)}>
+            Choose {plan.name}
+          </Button>
+        )}
       </Card.Body>
     </Card.Root>
   )
@@ -106,6 +118,8 @@ const CustomPlanCard = () => (
 
 const PlansView = ({ onSelect }: { onSelect: (plan: Plan, period: BillingPeriod) => void }) => {
   const { data: plans, isLoading, error } = useIntegratorPlans()
+  const { data: subscription } = useSubscription()
+  const currentPlanId = subscription?.plan.id
   const [period, setPeriod] = useState<BillingPeriod>('year')
 
   if (isLoading) {
@@ -144,8 +158,16 @@ const PlansView = ({ onSelect }: { onSelect: (plan: Plan, period: BillingPeriod)
       </Flex>
       <Stack gap={4}>
         {plans.map((plan) => (
-          <PlanCard key={plan.id} plan={plan} period={period} onSelect={(p) => onSelect(p, period)} />
+          <PlanCard
+            key={plan.id}
+            plan={plan}
+            period={period}
+            isCurrent={plan.id === currentPlanId}
+            onSelect={(p) => onSelect(p, period)}
+          />
         ))}
+        {/* Custom is always offered as the final, contact-only option after the self-serve plans. */}
+        <CustomPlanCard />
       </Stack>
     </Stack>
   )
