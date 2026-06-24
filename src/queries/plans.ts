@@ -10,7 +10,7 @@ export type IntegratorLimits = {
 
 // Subset of the backend SubscriptionPlan we use here (saas-backend#532 exposes integratorLimits).
 export type Plan = {
-  id: number
+  id: string // Stripe product ID
   name: string
   monthlyPrice: number
   yearlyPrice: number
@@ -21,9 +21,9 @@ export type Plan = {
 const isIntegratorPlan = (plan: Plan) => (plan.integratorLimits?.maxManagedOrgs ?? 0) > 0
 
 /**
- * Integrator plans available for purchase: plans whose integrator limits grant at least one
- * managed org. The free tier (zero-priced) is filtered out — it's assigned automatically at org
- * creation, not bought here.
+ * Integrator plans to offer in the upgrade dialog: every plan whose integrator limits grant at
+ * least one managed org, free tier included, cheapest first. The hardcoded Custom card is appended
+ * by the dialog after these.
  */
 export const useIntegratorPlans = () => {
   const { bearedFetch } = useAuth()
@@ -32,10 +32,6 @@ export const useIntegratorPlans = () => {
     queryKey: ['plans'],
     staleTime: 10 * 60 * 1000,
     queryFn: () => bearedFetch<Plan[]>(ApiEndpoints.Plans),
-    select: (plans) =>
-      (plans ?? [])
-        .filter(isIntegratorPlan)
-        .filter((p) => p.monthlyPrice > 0 || p.yearlyPrice > 0)
-        .sort((a, b) => a.monthlyPrice - b.monthlyPrice),
+    select: (plans) => (plans ?? []).filter(isIntegratorPlan).sort((a, b) => a.monthlyPrice - b.monthlyPrice),
   })
 }
